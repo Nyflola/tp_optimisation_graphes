@@ -2,6 +2,7 @@
 from graph import Graph
 
 if __name__ == "__main__":
-    g = Graph("/home/kali/Semestre_8/Optimisation et graphes/TP/src/reseau_10_10_1.txt")
+    g = Graph("./src/reseau_10_10_2.txt")
     g.readLabyrinth()
     g.createAdjacencyMatrix()
+    print(g.AdjacencyMatrix)

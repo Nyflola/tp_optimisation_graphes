@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from math import *
 
 class Graph:
     def __init__(self,path_to_file):
@@ -30,8 +31,30 @@ class Graph:
                 for i in range(0,self.num_column):
                     row.append(int(line.split(" ")[i]))
                 labyrinth.append(row)
+            self.labyrinth = labyrinth
         except Exception as e:
             print(e)
+
+    def ajout_chemin(self, i, j, n, m):
+        if self.labyrinth[i][j] == 0 or self.labyrinth[n][m] == 0:
+            return 9999
+        elif (i == n-1 and j == m) or (i == n+1 and j == m) or (i == n and j == m-1) or (i == n and j == m+1):
+            return 1
+        elif (i == n-1 and j == m-1) or (i == n+1 and j == m-1) or (i == n-1 and j == m+1) or (i == n+1 and j == m+1):
+            return sqrt(2)
+        else:
+            return 9999
+
+    def ajout_chemin_sommet(self, ligne, colonne):
+        n = len(self.labyrinth)
+        liste_sommet = []
+        for i in range(n):
+            for j in range(n):
+                chemin = self.ajout_chemin(ligne, colonne, n-1-i, j)
+                liste_sommet.append(chemin)
+        return liste_sommet
+
+
 
     def createAdjacencyMatrix(self):
         """
@@ -39,7 +62,10 @@ class Graph:
 
         self.AdjacencyMatrix => La matrice résultante 
         """
+        n = len(self.labyrinth)
         k = 0
-        for i in range(self.num_line,-1,-1):
-            for j in range(0,self.num_column):
-                None
+        self.AdjacencyMatrix = []
+        for i in range(n):
+            for j in range(n):
+                Liste_sommet = self.ajout_chemin_sommet(n-1-i,j)
+                self.AdjacencyMatrix.append(Liste_sommet)
