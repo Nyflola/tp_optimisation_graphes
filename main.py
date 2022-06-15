@@ -2,7 +2,7 @@
 from graph import Graph
 
 if __name__ == "__main__":
-    g = Graph("./src/reseau_10_10_2.txt")
+    g = Graph("./src/reseau_5_10_2.txt")
     g.readLabyrinth()
     g.createAdjacencyMatrix()
-    print(g.AdjacencyMatrix)
+    #print(g.AdjacencyMatrix)

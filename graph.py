@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from math import *
 
+from numpy import s_
+
 class Graph:
     def __init__(self,path_to_file):
         """
@@ -35,7 +37,7 @@ class Graph:
         except Exception as e:
             print(e)
 
-    def ajout_chemin(self, i, j, n, m):
+    def ajout_chemin(self, i, j, n, m): #retourne le poids pour aller du sommet i,j du labyrinthe au sommet n,m
         if self.labyrinth[i][j] == 0 or self.labyrinth[n][m] == 0:
             return 9999
         elif (i == n-1 and j == m) or (i == n+1 and j == m) or (i == n and j == m-1) or (i == n and j == m+1):
@@ -45,11 +47,12 @@ class Graph:
         else:
             return 9999
 
-    def ajout_chemin_sommet(self, ligne, colonne):
+    def ajout_chemin_sommet(self, ligne, colonne): #retourne la liste des poids des chemins du sommet ligne,colonne du labyrinthe vers tous les autres sommets du labyrinthe
         n = len(self.labyrinth)
+        m = len(self.labyrinth[0])
         liste_sommet = []
         for i in range(n):
-            for j in range(n):
+            for j in range(m):
                 chemin = self.ajout_chemin(ligne, colonne, n-1-i, j)
                 liste_sommet.append(chemin)
         return liste_sommet
@@ -63,9 +66,31 @@ class Graph:
         self.AdjacencyMatrix => La matrice résultante 
         """
         n = len(self.labyrinth)
-        k = 0
+        m = len(self.labyrinth[0])
         self.AdjacencyMatrix = []
         for i in range(n):
-            for j in range(n):
+            for j in range(m):
                 Liste_sommet = self.ajout_chemin_sommet(n-1-i,j)
                 self.AdjacencyMatrix.append(Liste_sommet)
+
+    def list_edge(self):
+        L = []
+        for ligne in self.labyrinth:
+            L = ligne + L
+        return L
+
+
+    #retourne la liste de deux éléments [sommet départ, sommet arrivée]
+    def dep_arr(self):
+        L = self.list_edge()
+        s = 0
+        f = 0
+        for i in range(len(L)):
+            if L[i] == 2:
+                s = i
+            elif L[i] == 3:
+                f = i
+        return s, f
+        
+
+
