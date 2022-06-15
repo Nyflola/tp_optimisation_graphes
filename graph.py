@@ -7,7 +7,6 @@ from numpy import s_
 #Le sommet n°0 est le sommet en bas à gauche et le sommet n°ombre_de_sommets - 1 est le sommet en haut à droite
 #On compte donc les sommets de gauche à droite et de bas en haut comme indiqué dans l'énoncé
 
-
 class Graph:
     def __init__(self,path_to_file):
         #Constructeur de la classe
@@ -89,5 +88,10 @@ class Graph:
                 f = i
         return s, f
         
-
-
+    #retourne la liste des successeurs du sommet n°i
+    def successeur(self, i):
+        L = []
+        for j in range(len(self.AdjacencyMatrix)):
+            if self.AdjacencyMatrix[i][j] <= 100:
+                L.append(j)
+        return L

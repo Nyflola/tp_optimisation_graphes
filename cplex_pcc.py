@@ -119,6 +119,7 @@ end = time.time()
 print('time elapsed =', end - start, 's')
 
 #écriture du cout  et du plus court chemin dans un fichier texte
+#La liste du chemin sera représenté sous la forme [[ville_depart, vill_a], [ville_a, ville_b], ..., [ville_n, ville_arrivée]]
 def ecriture_solution(cout, variables, L_coo, d, a):
     #On récupère dans une liste les numéros des xi utilisés dans le plus court chemin
     chemin = []
@@ -139,10 +140,3 @@ def ecriture_solution(cout, variables, L_coo, d, a):
         f.write('sommets visités = ' + str(pcc))
 
 ecriture_solution(cout, variables, L_coo_sommets_utiles, s, f)
-
-
-
-
-
-
-
