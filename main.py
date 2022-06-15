@@ -6,3 +6,5 @@ if __name__ == "__main__":
     g.readLabyrinth()
     g.createAdjacencyMatrix()
     #print(g.AdjacencyMatrix)
+    L = []
+    print(L[:0] + L[1:])

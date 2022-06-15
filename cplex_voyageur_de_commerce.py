@@ -21,7 +21,7 @@ def aij_non_infini(matrice):
 #Initialisation
 
 rep = "./src/"
-file_name = "voyageur_5_10.txt"
+file_name = "reseau_5_10_2.txt"
 
 g = Graph(rep+file_name)
 g.readLabyrinth()
@@ -77,7 +77,8 @@ for i in range(nb_sommets):
     else:
         opt_mod.add_constraint(sum(x)-sum(y)==0)
         #contrainte de visite de toutes les villes
-        opt_mod.add_constraint(sum(x) == 1)
+        if x != []:
+            opt_mod.add_constraint(sum(x) >= 1)
 
 # contrainte : x >= 0
 for x in X:
@@ -124,12 +125,11 @@ def ecriture_solution(cout, variables, L_coo, d, a):
         index = int(var[1:])
         chemin.append(index-1)
     pcc = []
-    pcc.append(d)
     for k in range(len(chemin)):
         indice = chemin[k]
         pcc.append(L_coo[indice])
-    pcc = tri_chemin(pcc[1:], d)
-    OutputFileName = rep + 'sol_' + file_name
+    #pcc = tri_chemin(pcc[1:], d)
+    OutputFileName = rep + 'sol_voyageur_' + file_name
     with open(OutputFileName, 'w') as f:
         f.write('coût = ' + str(cout))
         f.write('\n')
