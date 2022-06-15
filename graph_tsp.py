@@ -10,16 +10,32 @@ import copy
 
 
 class Graph:
-    def __init__(self,path_to_file):
-        #Constructeur de la classe
-        #path_to_file => chemin menant au fichier contenant le graphe
+    def __init__(self,path_to_file : str) -> None:
+        """
+        Constructeur de la classe
+
+        path_to_file => chemin menant au fichier contenant le graphe
+        """
         self.path_to_file = path_to_file
         self.AdjacencyMatrix = None
         self.num_line = None
         self.num_column = None
     
-    def readMatrix(self):
-        #Lis le graphe(ici appelé labyrinth) à partir d'un fichier et le stock dans self.labyrinth
+    def readMatrix(self) -> None:
+        """
+        Lis, à partir du fichier passé au constructeur, la matrice correspondant aux villes et aux poids
+        La matrice d'adjacence est stockée dans la variable d'instance "self.AdjacencyMatrix"
+
+        Le fichier est supposé être écris correctement et suivant la syntaxe suivante:
+        "
+        3 3
+        0 1 1
+        1 0 1
+        1 1 0
+        "
+        La valeur 0 est utilisée, arbitrairement, pour indiquer qu'un trajet n'est pas possible
+        Les valeurs doivent être >= 0
+        """
         try:
             AdjacencyMatrix = []
             file = open(self.path_to_file,"r")
@@ -35,27 +51,53 @@ class Graph:
         except Exception as e:
             print(e)
 
-    #retourne le poids pour aller du sommet i,j du labyrinthe au sommet n,m
-    def get_poids(self, i, j):
+    def get_poids(self, i : int, j : int) -> int:
+        """
+        Retourne le poids associé au trajet de la ville i à la ville j
+        """
         return self.AdjacencyMatrix[i][j] 
         
-    def trajet_possible(self,i,j):
+    def trajet_possible(self,i : int,j : int) -> bool:
+        """
+        Indique par "True" ou "False" si le trajet de la ville i à la ville j existe
+        """
         return True if self.get_poids(i,j) > 0 else False
 
-    def trajets_possibles(self,i,visited):
+    def trajets_possibles(self,i : int,visited : list) -> list:
+        """
+        Retourne la liste des villes atteignables directement (en un seul trajet) depuis la ville i.
+        Cet algorithme prend en compte une liste de ville déjà visitée.
+
+        i: Entier correspondant à l'indice dans la matrice de la ville de départ
+        visited: Liste contenant soit la liste vide soit une liste d'indice de la matrice
+        """
         trajets = []
         for j in range(self.num_column):
             if self.trajet_possible(i,j) and j not in visited:
                 trajets.append(j)
         return trajets
 
-    def longueur_trajet(self,trajet):
+    def longueur_trajet(self,trajet : list) -> int:
+        """
+        Retourne un entier correspondant à la longeur du trajet passé en paramètre
+
+        trajet: Liste de la forme suivante [[0,1],[1,2]]
+                Dans l'exemple ci dessous le trajet complet 
+                correspond au trajet de la ville 0 à la ville 1 puis de la ville 1 à la ville 2.
+        """
         res = 0
         for route in trajet:
             res += self.get_poids(route[0],route[1])
         return res
 
     def fonction_min(self,sommet : int,visited : list) -> list:
+        """
+        Fonction récursive permettant de récupérer le(s) cycle(s) hamiltonien(s) (un trajet) le(s) plus court(s) avec
+        pour point de départ le sommet "sommet" passé en paramètre sachant les sommets déjà visités
+
+        sommet: Sommet de départ, un indice de la matrice, ex: 0
+        visited: liste contenant les villes déjà visitées sous forme d'indice, ex: [0,2,3]
+        """
         possibilites = []
         sommets_possibles = self.trajets_possibles(sommet,visited)
         for s in sommets_possibles:
@@ -79,6 +121,13 @@ class Graph:
         return possibilites
 
     def fonction_all(self,sommet : int,visited : list) -> list:
+        """
+        Fonction récursive permettant de récupérer tous les cycles hamiltoniens (trajets)
+        avec pour point de départ le sommet "sommet" passé en paramètre sachant les sommets déjà visités
+
+        sommet: Sommet de départ, un indice de la matrice, ex: 0
+        visited: liste contenant les villes déjà visitées sous forme d'indice, ex: [0,2,3]
+        """
         possibilites = []
         sommets_possibles = self.trajets_possibles(sommet,visited)
         for s in sommets_possibles:
@@ -93,7 +142,12 @@ class Graph:
                     possibilites.append(nouveaux_trajet)
         return possibilites
 
-    def resolve_tsp(self):
+    def resolve_tsp(self) -> None:
+        """
+        Résoud le problème du voyageur de commerce et affiche le(s) résultat(s).
+
+        La matrice d'adjacence est supposée formée et le fichier lu.
+        """
         res = []
         for sommet in range(self.num_line):
             res += self.fonction_min(sommet,[sommet])
@@ -106,23 +160,35 @@ class Graph:
         print("\n\nVoici le(s) chemin(s) le(s) plus court(s) trouvé(s) :\n")
         i = 1
         for trajet in min:
+            j = 1
             print("Chemin %d (Longueur = %d):" % (i,self.longueur_trajet(trajet)),end="\n")
             for route in trajet:
-                print("\tSommet %d -> Sommet %d" % (route[0],route[1]),end="\n")
+                print("\t%d. Sommet %d -> Sommet %d" % (j,route[0],route[1]),end="\n")
+                j += 1
             i += 1
             print()
 
-    def tous_les_chemins(self):
+    def tous_les_chemins(self) -> None:
+        """
+        Affiche la liste de tous les cycles hamiltoniens pour le problème du voyageur de commerce.
+
+        La variable "filtre" ci-dessous permet de filtrer les résultats par longueur(20 max ici).
+
+        Cette fonction est utile afin de vérifier le bon fonctionnement des algorithmes au dessus. 
+        """
         res = []
-        filtre = 30
+        filtre = 20
         for sommet in range(self.num_line):
             res += self.fonction_all(sommet,[sommet])
         print("Voici tous les chemins possibles avec une durée de moins de %d :\n" % filtre)
         i = 1
         for trajet in res:
-            print("Chemin %d (Longueur = %d):" % (i,self.longueur_trajet(trajet)),end="\n")
-            for route in trajet:
-                print("\tSommet %d -> Sommet %d" % (route[0],route[1]),end="\n")
-            i += 1
-            print()
+            if self.longueur_trajet(trajet) <= filtre:
+                print("Chemin %d (Longueur = %d):" % (i,self.longueur_trajet(trajet)),end="\n")
+                j = 1
+                for route in trajet:
+                    print("\t%d. Sommet %d -> Sommet %d" % (j,route[0],route[1]),end="\n")
+                    j += 1
+                i += 1
+                print()
 
