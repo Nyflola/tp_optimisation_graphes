@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 from math import *
-
 from numpy import s_
+
+#Comment numérote-t-on les sommets dans certaines fonctions de cette classe et dans d'autres script?
+#Les sommet sont numérotés de 0 à nombre_de_sommets - 1
+#Le sommet n°0 est le sommet en bas à gauche et le sommet n°ombre_de_sommets - 1 est le sommet en haut à droite
+#On compte donc les sommets de gauche à droite et de bas en haut comme indiqué dans l'énoncé
+
 
 class Graph:
     def __init__(self,path_to_file):
-        """
-        Constructeur de la classe
-
-        path_to_file => chemin menant au fichier contenant le graphe
-        """
+        #Constructeur de la classe
+        #path_to_file => chemin menant au fichier contenant le graphe
         self.path_to_file = path_to_file
         self.labyrinth = None
         self.AdjacencyMatrix = None
@@ -17,11 +19,7 @@ class Graph:
         self.num_column = None
     
     def readLabyrinth(self):
-        """
-        Lis le graphe(ici appelé labyrinth) à partir d'un fichier
-
-        self.labyrinth => Tableau contenant le graphe
-        """
+        #Lis le graphe(ici appelé labyrinth) à partir d'un fichier et le stock dans self.labyrinth
         try:
             labyrinth = []
             file = open(self.path_to_file,"r")
@@ -37,7 +35,8 @@ class Graph:
         except Exception as e:
             print(e)
 
-    def ajout_chemin(self, i, j, n, m): #retourne le poids pour aller du sommet i,j du labyrinthe au sommet n,m
+    #retourne le poids pour aller du sommet i,j du labyrinthe au sommet n,m
+    def ajout_chemin(self, i, j, n, m): 
         if self.labyrinth[i][j] == 0 or self.labyrinth[n][m] == 0:
             return 9999
         elif (i == n-1 and j == m) or (i == n+1 and j == m) or (i == n and j == m-1) or (i == n and j == m+1):
@@ -47,7 +46,8 @@ class Graph:
         else:
             return 9999
 
-    def ajout_chemin_sommet(self, ligne, colonne): #retourne la liste des poids des chemins du sommet ligne,colonne du labyrinthe vers tous les autres sommets du labyrinthe
+    #retourne la liste des poids des chemins du sommet ligne,colonne du labyrinthe vers tous les autres sommets du labyrinthe
+    def ajout_chemin_sommet(self, ligne, colonne): 
         n = len(self.labyrinth)
         m = len(self.labyrinth[0])
         liste_sommet = []
@@ -60,11 +60,7 @@ class Graph:
 
 
     def createAdjacencyMatrix(self):
-        """
-        Crée la matrice d'ajdacence à partir du graphe d'un fichier lu précédemment
-
-        self.AdjacencyMatrix => La matrice résultante 
-        """
+        #Crée la matrice d'ajdacence à partir du graphe d'un fichier lu précédemment et la stock dans self.AdjacencyMatrix
         n = len(self.labyrinth)
         m = len(self.labyrinth[0])
         self.AdjacencyMatrix = []
@@ -73,6 +69,7 @@ class Graph:
                 Liste_sommet = self.ajout_chemin_sommet(n-1-i,j)
                 self.AdjacencyMatrix.append(Liste_sommet)
 
+    #retourne la liste des valeurs des sommets du graphe (0, 1, 2 ou 3) dans une liste --> L[i] = valeur du sommet n°i
     def list_edge(self):
         L = []
         for ligne in self.labyrinth:
